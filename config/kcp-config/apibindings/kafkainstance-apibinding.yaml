@@ -1,0 +1,13 @@
+apiVersion: apis.kcp.dev/v1alpha1
+kind: APIBinding
+metadata:
+  name: rhosak.kcp.github.com
+spec:
+  reference:
+    workspace:
+      path: root:rhosak
+      exportName: rhosak.kcp.github.com
+  acceptedPermissionClaims:
+    - resource: "secrets"
+    - resource: "configmaps"
+    - resource: "namespaces"

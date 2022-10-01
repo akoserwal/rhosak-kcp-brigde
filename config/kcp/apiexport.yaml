@@ -1,0 +1,15 @@
+apiVersion: apis.kcp.dev/v1alpha1
+kind: APIExport
+metadata:
+  annotations: {}
+  name: rhosak.kcp.github.com
+spec:
+  latestResourceSchemas:
+    - today.kafkainstances.rhosak.kcp.github.com
+  permissionClaims:
+    - group: ""
+      resource: "secrets"
+    - group: ""
+      resource: "configmaps"
+    - group: ""
+      resource: "namespaces"

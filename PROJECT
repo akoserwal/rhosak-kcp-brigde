@@ -1,0 +1,16 @@
+domain: github.com
+layout:
+- go.kubebuilder.io/v4-alpha
+projectName: rhosak-kcp-brigde
+repo: akoserwal/rhosak-kcp-brigde
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: rhosak.kcp
+  kind: KafkaInstance
+  path: akoserwal/rhosak-kcp-brigde/api/v1
+  version: v1
+version: "3"

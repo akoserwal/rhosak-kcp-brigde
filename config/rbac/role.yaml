@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - kafkainstances
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - kafkainstances/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - kafkainstances/status
+  verbs:
+  - get
+  - patch
+  - update
