@@ -47,12 +47,14 @@ type KafkaInstanceSpec struct {
 	ReauthenticationEnabled *bool  `json:"reauthenticationEnabled,omitempty"`
 	Region                  string `json:"region,omitempty"`
 	MultiAz                 *bool  `json:"multiAz,omitempty"`
+	OfflineToken            string `json:"offlineToken,omitempty"`
 }
 
 // KafkaInstanceStatus defines the observed state of KafkaInstance
 type KafkaInstanceStatus struct {
 	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
+	AdminServerUrl      string      `json:"adminServerUrl,omitempty"`
 	CreatedAt           metav1.Time `json:"region,omitempty"`
 	Href                string      `json:"href,omitempty"`
 	Id                  string      `json:"id,omitempty"`

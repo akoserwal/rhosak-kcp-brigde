@@ -6,6 +6,58 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ""
+  resources:
+  - secrets/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - secrets/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - rhosak.kcp.github.com
   resources:
   - kafkainstances
@@ -27,6 +79,32 @@ rules:
   - rhosak.kcp.github.com
   resources:
   - kafkainstances/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - tokens
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - tokens/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - tokens/status
   verbs:
   - get
   - patch

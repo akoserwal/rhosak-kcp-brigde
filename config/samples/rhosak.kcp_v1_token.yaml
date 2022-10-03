@@ -1,0 +1,12 @@
+apiVersion: rhosak.kcp.github.com/v1
+kind: Token
+metadata:
+  labels:
+    app.kubernetes.io/name: token
+    app.kubernetes.io/instance: token-sample
+    app.kubernetes.io/part-of: rhosak-kcp-brigde
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: rhosak-kcp-brigde
+  name: token-sample
+spec:
+    offlineToken:

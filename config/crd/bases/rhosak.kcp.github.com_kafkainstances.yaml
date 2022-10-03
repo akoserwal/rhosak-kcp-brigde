@@ -53,6 +53,8 @@ spec:
                 type: boolean
               name:
                 type: string
+              offlineToken:
+                type: string
               reauthenticationEnabled:
                 type: boolean
               region:
@@ -61,6 +63,11 @@ spec:
           status:
             description: KafkaInstanceStatus defines the observed state of KafkaInstance
             properties:
+              adminServerUrl:
+                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
+                  of cluster Important: Run "make" to regenerate code after modifying
+                  this file'
+                type: string
               bootstrapServerHost:
                 type: string
               href:
@@ -78,9 +85,6 @@ spec:
               phase:
                 type: string
               region:
-                description: 'INSERT ADDITIONAL STATUS FIELD - define observed state
-                  of cluster Important: Run "make" to regenerate code after modifying
-                  this file'
                 format: date-time
                 type: string
               updatedAt:

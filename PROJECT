@@ -18,4 +18,13 @@ resources:
   group: rhosak.kcp
   kind: Secret
   version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: github.com
+  group: rhosak.kcp
+  kind: Token
+  path: github.com/akoserwal/rhosak-kcp-brigde/api/v1
+  version: v1
 version: "3"

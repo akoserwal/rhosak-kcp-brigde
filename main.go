@@ -20,17 +20,23 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/kcp-dev/logicalcluster/v2"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/tools/clientcmd"
+	"os"
+	"sigs.k8s.io/controller-runtime/pkg/kcp"
+
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/discovery"
 	"k8s.io/client-go/rest"
-	"os"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/kcp"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
 	// to ensure that exec-entrypoint and run can make use of them.
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 
+	kcpclient "github.com/kcp-dev/kcp/pkg/client/clientset/versioned"
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -73,16 +79,23 @@ func main() {
 	opts := zap.Options{
 		Development: true,
 	}
+
 	opts.BindFlags(flag.CommandLine)
 	flag.Parse()
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
+	var err error
 
 	ctx := ctrl.SetupSignalHandler()
 	restConfig := ctrl.GetConfigOrDie()
 	setupLog = setupLog.WithValues("api-export-name", apiExportName)
 
+	kcpClientConfig, err := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
+		clientcmd.NewDefaultClientConfigLoadingRules(),
+		&clientcmd.ConfigOverrides{}).ClientConfig()
+	kcpClient, err := kcpclient.NewClusterForConfig(kcpClientConfig)
+
 	var mgr ctrl.Manager
-	var err error
+
 	options := ctrl.Options{
 		Scheme:                 scheme,
 		MetricsBindAddress:     metricsAddr,
@@ -116,14 +129,31 @@ func main() {
 		}
 	}
 
+	getAPIExport, err := kcpClient.Cluster(logicalcluster.New("root:rhosak")).ApisV1alpha1().APIExports().Get(ctx, apiExportName, metav1.GetOptions{})
+	setupLog.Error(err, "Failed to get GLBC APIExport "+apiExportName)
+	//+kubebuilder:scaffold:builder
+	getAPIExportVirtualWorkspaceURLAndIdentityHash(getAPIExport)
+
+	glbcVWClientConfig := rest.CopyConfig(kcpClientConfig)
+	kcpKubeClient, err := kubernetes.NewClusterForConfig(glbcVWClientConfig)
+
 	if err = (&controllers.KafkaInstanceReconciler{
 		Client: mgr.GetClient(),
+
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KafkaInstance")
 		os.Exit(1)
 	}
-	//+kubebuilder:scaffold:builder
+	if err = (&controllers.TokenReconciler{
+		Client:     mgr.GetClient(),
+		KcpClient:  kcpClient,
+		KubeClient: kcpKubeClient,
+		Scheme:     mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Token")
+		os.Exit(1)
+	}
 
 	if err := mgr.AddHealthzCheck("healthz", healthz.Ping); err != nil {
 		setupLog.Error(err, "unable to set up health check")
@@ -209,4 +239,13 @@ func kcpAPIsGroupPresent(restConfig *rest.Config) bool {
 		}
 	}
 	return false
+}
+func exitOnError(err error, msg string) {
+	if err != nil {
+		os.Exit(1)
+	}
+}
+func getAPIExportVirtualWorkspaceURLAndIdentityHash(export *apisv1alpha1.APIExport) {
+	fmt.Println("virtualwork", export.Status.VirtualWorkspaces)
+
 }

@@ -1,0 +1,27 @@
+# permissions for end users to view tokens.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: token-viewer-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: rhosak-kcp-brigde
+    app.kubernetes.io/part-of: rhosak-kcp-brigde
+    app.kubernetes.io/managed-by: kustomize
+  name: token-viewer-role
+rules:
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - tokens
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - rhosak.kcp.github.com
+  resources:
+  - tokens/status
+  verbs:
+  - get

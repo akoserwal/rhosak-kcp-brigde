@@ -6,6 +6,7 @@ metadata:
 spec:
   latestResourceSchemas:
     - today.kafkainstances.rhosak.kcp.github.com
+    - today.tokens.rhosak.kcp.github.com
   permissionClaims:
     - group: ""
       resource: "secrets"
